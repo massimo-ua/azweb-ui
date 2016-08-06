@@ -1,0 +1,25 @@
+{
+  "name": "azweb-ui",
+  "homepage": "https://github.com/massimo-ua/azweb-ui",
+  "authors": [
+    "Maxim Grishkov <grishkov.m@gmail.com>"
+  ],
+  "description": "Azweb UI components",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-resource": "*",
+    "angular-sanitize": "*",
+    "angular-ui-router": "*",
+    "satellizer": "*",
+    "sha256": "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha256.js"
+  }
+}
