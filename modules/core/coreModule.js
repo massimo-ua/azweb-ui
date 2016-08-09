@@ -18,6 +18,11 @@
   			templateUrl: 'modules/core/views/send-invite.html',
   			controller: 'sendInviteController',
   			data: {requiredLogin: true}
+  		})
+  		.state('viewInvite', {
+  			url: '/view-invite/:uuid',
+  			templateUrl: 'modules/core/views/view-invite.html',
+  			controller: 'viewInviteController'
   		});
   		$urlRouterProvider.otherwise('/coupons');
 }]);

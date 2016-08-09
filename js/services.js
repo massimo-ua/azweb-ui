@@ -56,18 +56,22 @@ angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREF
       }
       return $http(config);
     },
-    getNominals: function() {
+    getNominals: function(duedate) {
       var config = {
-        method: 'GET',
+        method: 'POST',
         url: COUPON_PREFIX + '/nominal'
+      }
+      if(duedate) {
+        config.data = { duedate: duedate }
       }
       return $http(config); 
     },
-    invite: function(invite) {
+    invite: function(req) {
+      console.log(req);
       var config = {
         method: 'POST',
         url: COUPON_PREFIX + '/invite',
-        data: invite
+        data: req
       }
       return $http(config);
     }

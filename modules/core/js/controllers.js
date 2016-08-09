@@ -29,7 +29,11 @@
 			}
 			$scope.loadCoupons($stateParams.type, $stateParams.page);
 			$scope.paginationEnd = function(page) {
-				return page <= $scope.paginationWindow ? $scope.paginationWindow * 2 : page + $scope.paginationWindow;
+				var end = page <= $scope.paginationWindow ? $scope.paginationWindow * 2 : page + $scope.paginationWindow;
+				if($scope.coupons.pagination) {
+					end = end <= $scope.coupons.pagination.total_pages ? end : $scope.coupons.pagination.total_pages;
+				}
+				return end;
 			}
 			$scope.paginationStart = function(page) {
 				return page <= $scope.paginationWindow ? 1 : page - $scope.paginationWindow;
@@ -52,33 +56,55 @@
 			$scope.formDisabled = false;
 			$scope.buttonText = 'Отправить';
 			$scope.inviteForm = {};
-			$scope.invite={};
-			couponService.getNominals()
-			.then(function(response){
-				if(response.data.data.length == 0) {
-					toastr.error('Не найдено ни одного купона пригодного для отправки', 'Данных не найдено!');
-					$scope.formDisabled = true;
+			$scope.req={};
+			$scope.duedate = undefined;
+
+			function init() {
+				couponService.getNominals()
+					.then(function(response){
+						if(response.data.data.length == 0) {
+							toastr.error('Не найдено ни одного купона пригодного для отправки', 'Данных не найдено!');
+							$scope.formDisabled = true;
+						}
+						$scope.nominals = response.data.data;
+						},
+						function(response){
+							console.log(response);
+							toastr.error('Во время загрузки перечня доступных номиналов произошла ошибка', 'Ошибка загрузки данных!');
+					});
+			};
+			init();
+			$scope.$watch('duedate',function(newValue, oldValue){
+				if(newValue != oldValue && newValue != undefined && $scope.req.nominal != undefined) {
+					var date = new Date(newValue+" UTC");
+					couponService.getNominals(date)
+						.then(function(response){
+							console.log(response);
+							$scope.nominals = response.data.data;
+							toastr.info('Количество купонов успешно обновлено!', 'Информация');
+						},
+						function(err){
+							console.log(err);
+							if(err.status == 404) {
+								toastr.error('По заданым условиям купоны отсутствуют', 'Ошибка!');
+							}
+							else {
+								toastr.error('Во время обновления произошла ошибка', 'Ошибка!');
+							}
+						})
 				}
-				//if(response.data.data.length == 1) {
-				//	$scope.inviteForm.nominal = response.data.data[0].nominal;
-				//}
-				$scope.nominals = response.data.data;
-			},
-			function(response){
-				console.log(response);
-				toastr.error('Во время загрузки перечня доступных номиналов произошла ошибка', 'Ошибка загрузки данных!');
 			});
 			$scope.invite = function() {
 				$scope.buttonText = 'Отправляем ...';
-				console.log($scope.inviteForm);
-				$scope.invite.duedate = $scope.invite.duedate ? new Date($scope.invite.duedate) : undefined;
-				couponService.invite($scope.invite)
+				$scope.req.duedate = $scope.duedate ? new Date($scope.duedate+" UTC") : undefined;
+				couponService.invite($scope.req)
 				.then(function(response){
-					toastr.info('Приглашение успешно отправлено!', 'Информация');
+					console.log(response)
+					toastr.info('Код: ' + response.data.uuid , 'Приглашение успешно отправлено!');
 					$scope.inviteForm = {};
-					$scope.invite={};
-				},function(response){
-					console.log(response);
+					$scope.req={};
+				},function(err){
+					console.log(err);
 					toastr.error('Во время отправки приглашения произошла ошибка', 'Ошибка отправки приглашения!');
 				})
 				.finally(function(){
@@ -87,11 +113,16 @@
 			}
 
 		}
+		var viewInviteController = function($scope, $stateParams, couponService, toastr) {
+			$scope.a = {};
+		}
 		/* dsependencies injection block */
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'toastr'];
 		sendInviteController.$inject = ['$scope', 'couponService', 'toastr'];
+		viewInviteController.$inject = ['$scope', '$stateParams', 'couponService', 'toastr'];
 		/* controllers definition */
 		angular.module('azweb.core.controllers')
 		.controller('couponsListController', couponsListController)
-		.controller('sendInviteController', sendInviteController);
+		.controller('sendInviteController', sendInviteController)
+		.controller('viewInviteController', viewInviteController);
 }());

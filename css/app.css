@@ -4,3 +4,6 @@ footer {
       padding: 10px 0 5px 0;
       font-size: 0.8em;
 }
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}

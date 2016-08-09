@@ -3,31 +3,31 @@
 		<ng-form id="invite-form" name="inviteForm">
 
 			<div ng-class="{'has-error': inviteForm.nominal.$dirty && inviteForm.nominal.$invalid}" class="form-group">
-			<label for="nominal" class="text-info">Номинал</label>
+			<label for="nominal" class="text-default">Номинал</label>
 				<div class="radio">
 				<label class="radio" ng-repeat="nominal in nominals track by $index">
-  					<input ng-disabled="formDisabled" ng-model="invite.nominal" ng-required="true" type="radio" name="nominal" id="nominal{{$index}}" value="{{nominal.nominal}}"> {{ nominal.nominal }} (доступно {{ nominal.count }})
+  					<input ng-disabled="formDisabled" ng-model="req.nominal" ng-required="true" type="radio" name="nominal" id="nominal{{$index}}" value="{{nominal.nominal}}"> {{ nominal.nominal }} (доступно {{ nominal.count }})
 				</label>
 				</div>
 				<div class="help-block error" ng-show="inviteForm.nominal.$dirty && inviteForm.nominal.$error.required">Пожалуйста, Выберите номинал купонов для отправки</div>
 			</div>
 			<div ng-class="{'has-error': inviteForm.amount.$dirty && inviteForm.amount.$invalid}" class="form-group">
-				<label for="amount" class="text-info">Количество</label>
-				<input ng-disabled="formDisabled" min="1" name="amount" type="number" ng-required="true" ng-model="invite.amount" class="form-control" placeholder="Укажите количество купонов для отправки" />
+				<label for="amount" class="text-default">Количество</label>
+				<input ng-disabled="formDisabled" min="1" max="nominal.count" name="amount" type="number" ng-required="true" ng-model="req.amount" class="form-control" placeholder="Укажите количество купонов для отправки" />
 				<div class="help-block error" ng-show="inviteForm.amount.$dirty && inviteForm.amount.$error.required">Пожалуйста, Укажите количество купонов для отправки</div>
 			</div>
 			<div ng-class="{'has-error': inviteForm.email.$dirty && inviteForm.email.$invalid}" class="form-group">
-				<label for="email" class="text-info">Email</label>
-				<input ng-disabled="formDisabled" name="email" type="email" ng-model="invite.email" class="form-control" placeholder="Укажите email для отправки приглашения" />
+				<label for="email" class="text-default">Email</label>
+				<input ng-disabled="formDisabled" name="email" type="email" ng-model="req.email" class="form-control" placeholder="Укажите email для отправки приглашения" />
 				<div class="help-block error" ng-show="inviteForm.email.$dirty && inviteForm.email.$error.required">Пожалуйста, укажите корректный email</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': inviteForm.duedate.$dirty && inviteForm.duedate.$invalid}">
-        <label for="duedate" class="text-info">Действителен до</label>
-          <input type="date" name="duedate" ng-model="invite.duedate" class="form-control" id="duedate" placeholder="Введите дату Действителен до" validatedateformat />
+        <label for="duedate" class="text-default">Действителен до</label>
+          <input type="date" name="duedate" ng-model="duedate" class="form-control" id="duedate" placeholder="Введите дату Действителен до" validatedateformat />
           <div class="help-block error" ng-show="inviteForm.duedate.$dirty && Form.duedate.$invalid">Введите корректную дату Действителен до</div>
       </div>
 			<div class="form-group">
-				<input type="button" class="btn btn-lg btn-primary btn-block" ng-click="invite()" ng-disabled="inviteForm.$invalid" value="{{buttonText}}" />
+				<input type="button" class="btn btn-lg btn-default btn-block" ng-click="invite()" ng-disabled="inviteForm.$invalid" value="{{buttonText}}" />
 			</div>
 		</ng-form>
 	</div>
