@@ -67,16 +67,49 @@ angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREF
       return $http(config); 
     },
     invite: function(req) {
-      console.log(req);
       var config = {
         method: 'POST',
         url: COUPON_PREFIX + '/invite',
         data: req
       }
       return $http(config);
+    },
+    getInvitationCouponsList: function(uuid, page) {
+      var config = {
+        method: 'GET',
+        url: COUPON_PREFIX + '/invite/list/'+uuid,
+        params: {
+          page: (page ? page : 1)
+        }
+      }
+      return $http(config);
+    },
+    getInvitations: function(page) {
+      var config = {
+        method: 'GET',
+        url: COUPON_PREFIX + '/invitations',
+        params: {
+          page: (page ? page : 1)
+        }
+      }
+      return $http(config);
     }
 
 	}
+}]);
+angular.module('azweb.services').factory('paginationService',[function(){
+  return {
+    paginationStart: function(page, window) {
+        return page <= window ? 1 : page - window;
+      },
+    paginationEnd: function(page, window, total) {
+        var end = page <= window ? window * 2 : page + window;
+        if(total && total != undefined) {
+          end = end <= total ? end : total;
+        }
+        return end;
+      }
+  }
 }]);
 angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
 angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');

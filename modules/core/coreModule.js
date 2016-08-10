@@ -21,8 +21,20 @@
   		})
   		.state('viewInvite', {
   			url: '/view-invite/:uuid',
+  			params: {
+  				page: 1
+  			},
   			templateUrl: 'modules/core/views/view-invite.html',
   			controller: 'viewInviteController'
+  		})
+  		.state('viewInvitesList', {
+  			url: '/view-invites-list',
+  			params: {
+  				page: 1
+  			},
+  			templateUrl: 'modules/core/views/view-invites-list.html',
+  			controller: 'viewInvitesListController',
+  			data: {requiredLogin: true}
   		});
   		$urlRouterProvider.otherwise('/coupons');
 }]);

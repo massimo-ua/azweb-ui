@@ -1,7 +1,7 @@
 (function(){
 	angular.module('azweb.core.controllers', []);
 		/* controller functions definition */
-		var couponsListController = function($scope, $stateParams, couponService, toastr) {
+		var couponsListController = function($scope, $stateParams, couponService, paginationService, toastr) {
 			$scope.coupons = {};
 			$scope.paginationEnabled = false;
 			$scope.type = $stateParams.type;
@@ -19,8 +19,8 @@
 						$scope.coupons.data = response.data.data;
 						if(response.data.pagination.total_pages > 1) {
 							$scope.paginationEnabled = true;
-							$scope.coupons.pagination = response.data.pagination;
-						} 
+						}
+						$scope.coupons.pagination = response.data.pagination; 
 					},
 					function(response){
 						console.log(response);
@@ -28,23 +28,19 @@
 					});
 			}
 			$scope.loadCoupons($stateParams.type, $stateParams.page);
-			$scope.paginationEnd = function(page) {
-				var end = page <= $scope.paginationWindow ? $scope.paginationWindow * 2 : page + $scope.paginationWindow;
-				if($scope.coupons.pagination) {
-					end = end <= $scope.coupons.pagination.total_pages ? end : $scope.coupons.pagination.total_pages;
-				}
-				return end;
+			$scope.paginationEnd = function(page, total) {
+				return paginationService.paginationEnd(page, $scope.paginationWindow, total);
 			}
 			$scope.paginationStart = function(page) {
-				return page <= $scope.paginationWindow ? 1 : page - $scope.paginationWindow;
+				return paginationService.paginationStart(page, $scope.paginationWindow);
 			}
 			$scope.use = function(index) {
 				couponService.useCoupon($scope.coupons.data[index].id)
 					.then(function(response){
 						toastr.info('Аккаунт успешно сохранен!', 'Информация');
 						$scope.coupons.data.splice(index,1);
-					},function(response){
-						console.log(response);
+					},function(err){
+						console.log(err);
 						toastr.error('Во время сохранения аккаунта произошла ошибка', 'Изенения не были сохранены!');
 					});
 			}
@@ -79,7 +75,6 @@
 					var date = new Date(newValue+" UTC");
 					couponService.getNominals(date)
 						.then(function(response){
-							console.log(response);
 							$scope.nominals = response.data.data;
 							toastr.info('Количество купонов успешно обновлено!', 'Информация');
 						},
@@ -99,10 +94,10 @@
 				$scope.req.duedate = $scope.duedate ? new Date($scope.duedate+" UTC") : undefined;
 				couponService.invite($scope.req)
 				.then(function(response){
-					console.log(response)
 					toastr.info('Код: ' + response.data.uuid , 'Приглашение успешно отправлено!');
 					$scope.inviteForm = {};
 					$scope.req={};
+					$scope.duedate = undefined;
 				},function(err){
 					console.log(err);
 					toastr.error('Во время отправки приглашения произошла ошибка', 'Ошибка отправки приглашения!');
@@ -113,16 +108,71 @@
 			}
 
 		}
-		var viewInviteController = function($scope, $stateParams, couponService, toastr) {
-			$scope.a = {};
+		var viewInviteController = function($scope, $stateParams, couponService, paginationService, toastr) {
+			$scope.coupons = {};
+			$scope.loadCoupons = function(uuid, page) {
+				if(uuid == undefined) {
+					return;
+				}
+				couponService.getInvitationCouponsList(uuid, page)
+					.then(function(response){
+						if(response.data.data.length == 0) {
+							toastr.error('Не найдено ни одной записи соответствующей запросу', 'Данных не найдено!');
+							$scope.paginationEnabled = false;
+						}
+						else {
+							$scope.coupons.data = response.data.data;
+						}
+						if(response.data.pagination.total_pages > 1) {
+							$scope.paginationEnabled = true;
+						}
+						$scope.coupons.pagination = response.data.pagination; 
+					}, function(err){
+						console.log(err);
+						toastr.error('Произошла ошибка во время загрузки данных', 'Ошибка получения данных');
+					});
+			}
+			$scope.loadCoupons($stateParams.uuid, $stateParams.page);
+			$scope.paginationEnd = function(page, total) {
+				return paginationService.paginationEnd(page, $scope.paginationWindow, total);
+			}
+			$scope.paginationStart = function(page) {
+				return paginationService.paginationStart(page, $scope.paginationWindow);
+			}
+		}
+		var viewInvitesListController = function($scope, $stateParams, couponService, paginationService, toastr) {
+			$scope.coupons = {};
+			$scope.loadCoupons = function(page) {
+				couponService.getInvitations(page)
+				.then(function(response){
+						if(response.data.data.length == 0) {
+							toastr.error('Не найдено ни одной записи соответствующей запросу', 'Данных не найдено!');
+							$scope.paginationEnabled = false;
+						}
+						else {
+							$scope.coupons.data = response.data.data;
+						}
+						if(response.data.pagination.total_pages > 1) {
+							$scope.paginationEnabled = true;
+						}
+						$scope.coupons.pagination = response.data.pagination;  
+					},
+					function(err){
+						console.log(err);
+						toastr.error('Произошла ошибка во время загрузки данных', 'Ошибка получения данных');
+					});
+			}
+			$scope.loadCoupons($stateParams.page);
 		}
 		/* dsependencies injection block */
-		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'toastr'];
+		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		sendInviteController.$inject = ['$scope', 'couponService', 'toastr'];
-		viewInviteController.$inject = ['$scope', '$stateParams', 'couponService', 'toastr'];
+		viewInviteController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
+		viewInvitesListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		/* controllers definition */
 		angular.module('azweb.core.controllers')
 		.controller('couponsListController', couponsListController)
 		.controller('sendInviteController', sendInviteController)
-		.controller('viewInviteController', viewInviteController);
+		.controller('viewInviteController', viewInviteController)
+		.controller('viewInvitesListController', viewInvitesListController);
 }());

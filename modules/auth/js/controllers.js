@@ -14,8 +14,7 @@ angular.module('azweb.auth.controllers', [])
 			$state.go('coupons');
 		})
 		.catch(function(response){
-				console.log(response);
-				toastr.error(response.data.message, 'Ошибка авторизации');
+				toastr.error('Произошла ошибка во время авторизации пользователя. Проверьте корректность логина и пароля', 'Ошибка авторизации');
 		})
 		.finally(function(){
 			$scope.buttonText = 'Логин';

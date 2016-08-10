@@ -25,10 +25,11 @@
     </div>
     <div class="collapse navbar-collapse" id="azwebNavbar">
       <ul class="nav navbar-nav">
-        <li ui-sref-active="active" ui-sref="coupons({type:'actual', page: 1})"><a>Активные</a></li>
-        <li ui-sref-active="active" ui-sref="coupons({type:'used', page: 1})"><a>Использованные</a></li>
-        <li ui-sref-active="active" ui-sref="coupons({type:'all', page: 1})"><a>Все</a></li>
-        <li ui-sref-active="active" ui-sref="sendInvite"><a>Отправить</a></li>
+        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'actual', page: 1})"><a>Активные</a></li>
+        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'used', page: 1})"><a>Использованные</a></li>
+        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'all', page: 1})"><a>Все</a></li>
+        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="viewInvitesList"><a>Приглашения</a></li>
+        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="sendInvite"><a>Отправить</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li ng-cloak ng-show="!userProfile"><a ui-sref="authLogin"><span class="glyphicon glyphicon-log-in"></span> Login</a>

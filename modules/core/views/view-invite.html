@@ -1,0 +1,13 @@
+<div class="row">
+	<table class="table table-striped">
+		<tr><th>Email</th><th>Пароль</th><th>Купон</th><th>Номинал</th><th>Действителен до</th></tr>
+		<tr ng-repeat="coupon in coupons.data track by coupon.id">
+			<td>{{ coupon.email }}</td>
+			<td>{{ coupon.password }}</td>
+			<td>{{ coupon.coupon }}</td>
+			<td>{{ coupon.nominal }}</td>
+			<td>{{ coupon.duedate | date: 'dd.MM.yyyy' }}</td>
+		</tr>
+	</table>
+</div>
+<div ng-cloak class="row" ng-include="'views/pagination.html'"></div>
