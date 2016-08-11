@@ -24,12 +24,24 @@
       <a class="navbar-brand" href="#">Azweb</a>
     </div>
     <div class="collapse navbar-collapse" id="azwebNavbar">
-      <ul class="nav navbar-nav">
-        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'actual', page: 1})"><a>Активные</a></li>
+      <ul ng-cloak ng-show="userProfile" class="nav navbar-nav">
+        <li ng-cloak ng-show="userProfile" class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><b>Купоны</b> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+       <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'actual', page: 1})"><a>Активные</a></li>
         <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'used', page: 1})"><a>Использованные</a></li>
-        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'all', page: 1})"><a>Все</a></li>
-        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="viewInvitesList"><a>Приглашения</a></li>
+        <li ui-sref-active="active" ui-sref="coupons({type:'all', page: 1})"><a>Все</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul ng-cloak ng-show="userProfile" class="nav navbar-nav">
+        <li ng-cloak ng-show="userProfile" class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><b>Приглашения</b> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+       <li ui-sref-active="active" ui-sref="viewInvitesList"><a>Список приглашений</a></li>
         <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="sendInvite"><a>Отправить</a></li>
+          </ul>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li ng-cloak ng-show="!userProfile"><a ui-sref="authLogin"><span class="glyphicon glyphicon-log-in"></span> Login</a>
