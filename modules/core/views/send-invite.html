@@ -21,11 +21,13 @@
 				<input ng-disabled="formDisabled" name="email" type="email" ng-model="req.email" class="form-control" placeholder="Укажите email для отправки приглашения" />
 				<div class="help-block error" ng-show="inviteForm.email.$dirty && inviteForm.email.$error.required">Пожалуйста, укажите корректный email</div>
 			</div>
-			<div class="form-group" ng-class="{'has-error': inviteForm.duedate.$dirty && inviteForm.duedate.$invalid}">
+			<!-- div class="form-group" ng-class="{'has-error': inviteForm.duedate.$dirty && inviteForm.duedate.$invalid}">
         <label for="duedate" class="text-default">Действителен до</label>
           <input type="date" name="duedate" ng-model="duedate" class="form-control" id="duedate" placeholder="Введите дату Действителен до" validatedateformat />
           <div class="help-block error" ng-show="inviteForm.duedate.$dirty && Form.duedate.$invalid">Введите корректную дату Действителен до</div>
-      </div>
+      </div -->
+      		<div ng-click="refreshAmount()" min-date="minDueDate" pickadate week-starts-on="1" ng-model="req.duedate"></div>
+      		<hr/>
 			<div class="form-group">
 				<input type="button" class="btn btn-lg btn-default btn-block" ng-click="invite()" ng-disabled="inviteForm.$invalid" value="{{buttonText}}" />
 			</div>

@@ -47,15 +47,15 @@
 
 		}
 
-		var sendInviteController = function($scope, couponService, toastr) {
-			$scope.nominals = {};
-			$scope.formDisabled = false;
-			$scope.buttonText = 'Отправить';
-			$scope.inviteForm = {};
-			$scope.req={};
-			$scope.duedate = undefined;
+		var sendInviteController = function($scope, $state, couponService, toastr) {
 
 			function init() {
+				$scope.nominals = {};
+				$scope.formDisabled = false;
+				$scope.buttonText = 'Отправить';
+				$scope.inviteForm = {};
+				$scope.req={};
+				$scope.minDueDate = new Date(new Date() - 86400000);
 				couponService.getNominals()
 					.then(function(response){
 						if(response.data.data.length == 0) {
@@ -70,9 +70,9 @@
 					});
 			};
 			init();
-			$scope.$watch('duedate',function(newValue, oldValue){
-				if(newValue != oldValue && newValue != undefined && $scope.req.nominal != undefined) {
-					var date = new Date(newValue+" UTC");
+			$scope.refreshAmount = function () {
+				if($scope.req.nominal != undefined) {
+					var date = new Date($scope.req.duedate);
 					couponService.getNominals(date)
 						.then(function(response){
 							$scope.nominals = response.data.data;
@@ -88,16 +88,14 @@
 							}
 						})
 				}
-			});
+			};
 			$scope.invite = function() {
 				$scope.buttonText = 'Отправляем ...';
-				$scope.req.duedate = $scope.duedate ? new Date($scope.duedate+" UTC") : undefined;
+				$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
 				couponService.invite($scope.req)
 				.then(function(response){
 					toastr.info('Код: ' + response.data.uuid , 'Приглашение успешно отправлено!');
-					$scope.inviteForm = {};
-					$scope.req={};
-					$scope.duedate = undefined;
+					$state.reload();
 				},function(err){
 					console.log(err);
 					toastr.error('Во время отправки приглашения произошла ошибка', 'Ошибка отправки приглашения!');
@@ -166,7 +164,7 @@
 		}
 		/* dsependencies injection block */
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
-		sendInviteController.$inject = ['$scope', 'couponService', 'toastr'];
+		sendInviteController.$inject = ['$scope', '$state', 'couponService', 'toastr'];
 		viewInviteController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		viewInvitesListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		/* controllers definition */

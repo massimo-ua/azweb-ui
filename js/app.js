@@ -4,6 +4,7 @@ angular.module('azweb',[
 		'ui.router',
 		'satellizer',
 		'toastr',
+    'pickadate',
 		'azweb.services',
 		'azweb.filters',
 		'azweb.auth',
@@ -34,8 +35,19 @@ angular.module('azweb').run(['$rootScope', '$state', 'authService', '$http', fun
 }]);
 angular.module('azweb').config(['toastrConfig', function(toastrConfig){
 	angular.extend(toastrConfig, {
-		positionClass: 'toast-top-right',
-		target: 'body'
+		"closeButton": true,
+    "positionClass": 'toast-top-right',
+    "onclick": null,
+		"target": 'body',
+    "newestOnTop": true,
+    "showDuration": "300", // in milliseconds
+    "hideDuration": "1000", // in milliseconds
+    "timeOut": "5000", // in milliseconds
+    "extendedTimeOut": "1000", // in milliseconds
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
 	});
 }]);
 }());
