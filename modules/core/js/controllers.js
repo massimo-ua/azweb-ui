@@ -55,7 +55,14 @@
 				$scope.buttonText = 'Отправить';
 				$scope.inviteForm = {};
 				$scope.req={};
-				$scope.minDueDate = new Date(new Date() - 86400000);
+				$scope.minDueDate = new Date(); /*- 86400000);*/
+				$scope.maxDueDate = new Date($scope.minDueDate + 432000000);
+				couponService.getMaxDueDate()
+					.then(function(response){
+						$scope.maxDueDate = new Date(response.data.maxduedate);
+					}, function(data, status, headers, config){
+						console.log(data.error + ' ' + status);
+					});
 				couponService.getNominals()
 					.then(function(response){
 						if(response.data.data.length == 0) {
@@ -68,6 +75,7 @@
 							console.log(response);
 							toastr.error('Во время загрузки перечня доступных номиналов произошла ошибка', 'Ошибка загрузки данных!');
 					});
+					updateAccountsAmount();
 			};
 			init();
 			$scope.refreshAmount = function () {
@@ -102,7 +110,16 @@
 				})
 				.finally(function(){
 					$scope.buttonText = 'Отправить';
+					updateAccountsAmount();
 				});
+			}
+			function updateAccountsAmount() {
+				couponService.getActiveCouponsAmount()
+					.then(function(response){
+						$scope.activeCouponsAmount = response.data.activeCouponsAmount;
+					}, function(data, status, headers, config){
+						console.log(data.error + ' ' + status);
+					});
 			}
 
 		}

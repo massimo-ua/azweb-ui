@@ -93,8 +93,21 @@ angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREF
         }
       }
       return $http(config);
+    },
+    getMaxDueDate: function() {
+      var config = {
+        method: 'GET',
+        url: COUPON_PREFIX + '/maxduedate'
+      }
+      return $http(config);
+    },
+    getActiveCouponsAmount: function() {
+      var config = {
+        method: 'GET',
+        url: COUPON_PREFIX + '/active/amount'
+      }
+      return $http(config);
     }
-
 	}
 }]);
 angular.module('azweb.services').factory('paginationService',[function(){

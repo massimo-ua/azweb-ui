@@ -26,7 +26,18 @@
           <input type="date" name="duedate" ng-model="duedate" class="form-control" id="duedate" placeholder="Введите дату Действителен до" validatedateformat />
           <div class="help-block error" ng-show="inviteForm.duedate.$dirty && Form.duedate.$invalid">Введите корректную дату Действителен до</div>
       </div -->
-      		<div ng-click="refreshAmount()" min-date="minDueDate" pickadate week-starts-on="1" ng-model="req.duedate"></div>
+      		<div ng-click="refreshAmount()" min-date="minDueDate" max-date="maxDueDate" pickadate week-starts-on="1" ng-model="req.duedate"></div>
+      		<div ng-cloack ng-show="activeCouponsAmount" class="row">
+      			<div class="col-xs-12 info"><h4>Распределние по дате окончания</h4></div>
+      		</div>
+      		<div ng-cloack ng-show="activeCouponsAmount" class="row foo">
+      			<div class="col-xs-2 text-left"><b>Дата</b></div>
+      			<div class="col-xs-4 col-xs-offset-6 text-right"><b>Количество</b></div>
+      		</div>
+      		<div ng-cloack ng-if="activeCouponsAmount" class="row foo" ng-repeat="record in activeCouponsAmount">
+      			<div class="col-xs-2 text-left">{{ record.duedate | date : 'dd.MM' }}</div>
+      			<div class="col-xs-4 col-xs-offset-6 text-right">{{ record.amount }}</div>
+      		</div>
       		<hr/>
 			<div class="form-group">
 				<input type="button" class="btn btn-lg btn-default btn-block" ng-click="invite()" ng-disabled="inviteForm.$invalid" value="{{buttonText}}" />
