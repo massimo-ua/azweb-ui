@@ -59,7 +59,7 @@
 				$scope.maxDueDate = new Date($scope.minDueDate + 432000000);
 				couponService.getMaxDueDate()
 					.then(function(response){
-						$scope.maxDueDate = new Date(response.data.maxduedate);
+						$scope.maxDueDate = new Date(response.data.maxduedate + 86400000);
 					}, function(data, status, headers, config){
 						console.log(data.error + ' ' + status);
 					});
@@ -100,6 +100,7 @@
 			$scope.invite = function() {
 				$scope.buttonText = 'Отправляем ...';
 				$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
+				console.log($scope.req);
 				couponService.invite($scope.req)
 				.then(function(response){
 					toastr.info('Код: ' + response.data.uuid , 'Приглашение успешно отправлено!');
@@ -125,11 +126,10 @@
 		}
 		var viewInviteController = function($scope, $stateParams, couponService, paginationService, toastr) {
 			$scope.coupons = {};
-			$scope.loadCoupons = function(uuid, page) {
-				if(uuid == undefined) {
-					return;
-				}
-				couponService.getInvitationCouponsList(uuid, page)
+			$scope.paginationEnabled = false;
+			$scope.paginationWindow = 5;
+			$scope.loadCoupons = function(type, page) {
+				couponService.getInvitationCouponsList($stateParams.uuid, page)
 					.then(function(response){
 						if(response.data.data.length == 0) {
 							toastr.error('Не найдено ни одной записи соответствующей запросу', 'Данных не найдено!');
@@ -147,7 +147,7 @@
 						toastr.error('Произошла ошибка во время загрузки данных', 'Ошибка получения данных');
 					});
 			}
-			$scope.loadCoupons($stateParams.uuid, $stateParams.page);
+			$scope.loadCoupons(null, $stateParams.page);
 			$scope.paginationEnd = function(page, total) {
 				return paginationService.paginationEnd(page, $scope.paginationWindow, total);
 			}
@@ -157,7 +157,9 @@
 		}
 		var viewInvitesListController = function($scope, $stateParams, couponService, paginationService, toastr) {
 			$scope.coupons = {};
-			$scope.loadCoupons = function(page) {
+			$scope.paginationEnabled = false;
+			$scope.paginationWindow = 5;
+			$scope.loadCoupons = function(type, page) {
 				couponService.getInvitations(page)
 				.then(function(response){
 						if(response.data.data.length == 0) {
@@ -165,7 +167,7 @@
 							$scope.paginationEnabled = false;
 						}
 						else {
-							$scope.coupons.data = response.data.data;
+							$scope.coupons = response.data.data;
 						}
 						if(response.data.pagination.total_pages > 1) {
 							$scope.paginationEnabled = true;
@@ -177,7 +179,13 @@
 						toastr.error('Произошла ошибка во время загрузки данных', 'Ошибка получения данных');
 					});
 			}
-			$scope.loadCoupons($stateParams.page);
+			$scope.loadCoupons(null, $stateParams.page);
+			$scope.paginationEnd = function(page, total) {
+				return paginationService.paginationEnd(page, $scope.paginationWindow, total);
+			}
+			$scope.paginationStart = function(page) {
+				return paginationService.paginationStart(page, $scope.paginationWindow);
+			}
 		}
 		/* dsependencies injection block */
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
