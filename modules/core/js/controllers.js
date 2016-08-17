@@ -167,7 +167,7 @@
 							$scope.paginationEnabled = false;
 						}
 						else {
-							$scope.coupons = response.data.data;
+							$scope.coupons.data = response.data.data;
 						}
 						if(response.data.pagination.total_pages > 1) {
 							$scope.paginationEnabled = true;
