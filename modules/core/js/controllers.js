@@ -49,35 +49,62 @@
 
 		var sendInviteController = function($scope, $state, couponService, toastr) {
 
+			function intersect_safe(a, b)
+{
+  var ai = bi= 0;
+  var result = [];
+
+  while( ai < a.length && bi < b.length ){
+     if      (a[ai] < b[bi] ){ ai++; }
+     else if (a[ai] > b[bi] ){ bi++; }
+     else /* they're equal */
+     {
+       result.push(ai);
+       ai++;
+       bi++;
+     }
+  }
+
+  return result;
+}
+
+			function getDisabledDates(data) {
+
+			}
+
+
+
 			function init() {
 				$scope.nominals = {};
-				$scope.formDisabled = false;
+				$scope.statEnabled = false;
 				$scope.buttonText = 'Отправить';
 				$scope.inviteForm = {};
 				$scope.req={};
 				$scope.minDueDate = new Date(); /*- 86400000);*/
 				$scope.maxDueDate = new Date($scope.minDueDate + 432000000);
-				couponService.getMaxDueDate()
+				$scope.disabledDates = [];
+				/*couponService.getMaxDueDate()
 					.then(function(response){
 						$scope.maxDueDate = new Date(response.data.maxduedate + 86400000);
 					}, function(data, status, headers, config){
 						console.log(data.error + ' ' + status);
-					});
+					});*/
 				couponService.getNominals()
 					.then(function(response){
 						if(response.data.data.length == 0) {
 							toastr.error('Не найдено ни одного купона пригодного для отправки', 'Данных не найдено!');
-							$scope.formDisabled = true;
 						}
 						$scope.nominals = response.data.data;
+						$scope.statEnabled = true;
 						},
 						function(response){
 							console.log(response);
-							toastr.error('Во время загрузки перечня доступных номиналов произошла ошибка', 'Ошибка загрузки данных!');
+							//toastr.error('Во время загрузки перечня доступных номиналов произошла ошибка', 'Ошибка загрузки данных!');
 					});
 					updateAccountsAmount();
 			};
 			init();
+
 			$scope.refreshAmount = function () {
 				if($scope.req.nominal != undefined) {
 					var date = new Date($scope.req.duedate);
@@ -100,7 +127,6 @@
 			$scope.invite = function() {
 				$scope.buttonText = 'Отправляем ...';
 				$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
-				console.log($scope.req);
 				couponService.invite($scope.req)
 				.then(function(response){
 					toastr.info('Код: ' + response.data.uuid , 'Приглашение успешно отправлено!');
@@ -118,9 +144,37 @@
 				couponService.getActiveCouponsAmount()
 					.then(function(response){
 						$scope.activeCouponsAmount = response.data.activeCouponsAmount;
+						$scope.minDueDate = new Date($scope.activeCouponsAmount[0].duedate - 86400000);
+						$scope.maxDueDate = new Date($scope.activeCouponsAmount[$scope.activeCouponsAmount.length-1].duedate);			
+						$scope.disabledDates = listDisabledDates($scope.activeCouponsAmount);
 					}, function(data, status, headers, config){
 						console.log(data.error + ' ' + status);
 					});
+			}
+			function listDisabledDates(activeDates) {
+						var current = null;
+						var prev = null;
+						var disabledDates = [];
+						for(i=0;i<activeDates.length;i++){
+							prev = current;
+							current = new Date(activeDates[i].duedate);
+							if(prev != null) {
+								var diff = Math.floor((current - prev) / 86400000);
+								if(diff > 1) {
+									for(d=1;d<=diff;d++) {
+										var emptyDate = new Date(prev);
+										emptyDate.setDate(emptyDate.getDate() + d);
+										disabledDates.push(dateToStr(emptyDate));
+									}
+								}
+							}
+
+						}
+						return disabledDates;
+			}
+			function dateToStr(date) {
+				function pad(s) { return (s < 10) ? '0' + s : s; };
+				return [date.getFullYear(), pad(date.getMonth()+1), pad(date.getDate())].join('-');
 			}
 
 		}

@@ -11,3 +11,10 @@ footer {
 .foo {
     border-bottom: 1px solid black;
 }
+
+.pickadate-enabled {
+    cursor: pointer;
+    font-size: 12px;
+    color: #fffffc !important;
+    background-color: #0066cc;
+  }
