@@ -1,6 +1,6 @@
 (function(){
 	'use strict'
-	angular.module('azweb.core', ['azweb.core.controllers']);
+	angular.module('azweb.core', ['ngClickCopy','azweb.core.controllers']);
 	angular.module('azweb.core').config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
   		$stateProvider
   		.state('coupons', {

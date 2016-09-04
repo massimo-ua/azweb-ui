@@ -47,33 +47,7 @@
 
 		}
 
-		var sendInviteController = function($scope, $state, couponService, toastr) {
-
-			function intersect_safe(a, b)
-{
-  var ai = bi= 0;
-  var result = [];
-
-  while( ai < a.length && bi < b.length ){
-     if      (a[ai] < b[bi] ){ ai++; }
-     else if (a[ai] > b[bi] ){ bi++; }
-     else /* they're equal */
-     {
-       result.push(ai);
-       ai++;
-       bi++;
-     }
-  }
-
-  return result;
-}
-
-			function getDisabledDates(data) {
-
-			}
-
-
-
+		var sendInviteController = function($scope, $state, couponService, toastr, ngCopy) {
 			function init() {
 				$scope.nominals = {};
 				$scope.statEnabled = false;
@@ -129,7 +103,9 @@
 				$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
 				couponService.invite($scope.req)
 				.then(function(response){
-					toastr.info('Код: ' + response.data.uuid , 'Приглашение успешно отправлено!');
+					var link = "http://198.96.90.154:10102/#/view-invite/" + response.data.uuid;
+					ngCopy(link);
+					toastr.info('Код: ' + response.data.uuid, 'Приглашение успешно отправлено!');
 					$state.reload();
 				},function(err){
 					console.log(err);
@@ -243,7 +219,7 @@
 		}
 		/* dsependencies injection block */
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
-		sendInviteController.$inject = ['$scope', '$state', 'couponService', 'toastr'];
+		sendInviteController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
 		viewInviteController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		viewInvitesListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		/* controllers definition */
