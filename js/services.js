@@ -35,7 +35,7 @@ angular.module('azweb.services').factory('authService', ['$auth', '$http', 'AUTH
     }
   }
 }]);
-angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREFIX', function($http, COUPON_PREFIX) {
+angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREFIX', 'ACCOUNT_PREFIX', function($http, COUPON_PREFIX, ACCOUNT_PREFIX) {
   return {
     getCoupons: function(type, page) {
     	var types = ['actual','used','all'];
@@ -74,6 +74,22 @@ angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREF
       }
       return $http(config);
     },
+    sendAccounts: function(req) {
+      var config = {
+        method: 'POST',
+        url: ACCOUNT_PREFIX + '/invite',
+        data: req
+      }
+      return $http(config);
+    },
+    checkAccountsAmount: function(date, data) {
+      for(var i=0; i < data.length; i++) {
+        if(new Date(date).valueOf() === new Date(data[i].duedate).valueOf()) {
+          return parseInt(data[i].amount); 
+        }
+      }
+      return 0;
+    },
     getInvitationCouponsList: function(uuid, page) {
       var config = {
         method: 'GET',
@@ -107,8 +123,40 @@ angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREF
         url: COUPON_PREFIX + '/active/amount'
       }
       return $http(config);
-    }
+    },
+    getActiveAccountsAmount: function() {
+      var config = {
+        method: 'GET',
+        url: ACCOUNT_PREFIX + '/active/amount'
+      }
+      return $http(config);
+    },
+    listDisabledDates: function(activeDates) {
+            var current = null;
+            var prev = null;
+            var disabledDates = [];
+            for(var i=0;i<activeDates.length;i++){
+              prev = current;
+              current = new Date(activeDates[i].duedate);
+              if(prev != null) {
+                var diff = Math.floor((current - prev) / 86400000);
+                if(diff > 1) {
+                  for(var d=1;d<=diff;d++) {
+                    var emptyDate = new Date(prev);
+                    emptyDate.setDate(emptyDate.getDate() + d);
+                    disabledDates.push(dateToStr(emptyDate));
+                  }
+                }
+              }
+
+            }
+            return disabledDates;
+      }
 	}
+  function dateToStr(date) {
+        function pad(s) { return (s < 10) ? '0' + s : s; };
+        return [date.getFullYear(), pad(date.getMonth()+1), pad(date.getDate())].join('-');
+  }
 }]);
 angular.module('azweb.services').factory('paginationService',[function(){
   return {
@@ -124,7 +172,10 @@ angular.module('azweb.services').factory('paginationService',[function(){
       }
   }
 }]);
-angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
-angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');
-
+angular.module('azweb.services').value('AUTH_PREFIX','http://198.96.90.154:10101/api/v1/auth');
+angular.module('azweb.services').value('COUPON_PREFIX','http://198.96.90.154:10101/api/v1/coupons');
+angular.module('azweb.services').value('ACCOUNT_PREFIX','http://198.96.90.154:10101/api/v1/accounts');
+//angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
+//angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');
+//angular.module('azweb.services').value('ACCOUNT_PREFIX','http://127.0.0.1:5000/api/v1/accounts');
 }());

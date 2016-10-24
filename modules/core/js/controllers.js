@@ -122,35 +122,10 @@
 						$scope.activeCouponsAmount = response.data.activeCouponsAmount;
 						$scope.minDueDate = new Date($scope.activeCouponsAmount[0].duedate - 86400000);
 						$scope.maxDueDate = new Date($scope.activeCouponsAmount[$scope.activeCouponsAmount.length-1].duedate);			
-						$scope.disabledDates = listDisabledDates($scope.activeCouponsAmount);
+						$scope.disabledDates = couponService.listDisabledDates($scope.activeCouponsAmount);
 					}, function(data, status, headers, config){
 						console.log(data.error + ' ' + status);
 					});
-			}
-			function listDisabledDates(activeDates) {
-						var current = null;
-						var prev = null;
-						var disabledDates = [];
-						for(i=0;i<activeDates.length;i++){
-							prev = current;
-							current = new Date(activeDates[i].duedate);
-							if(prev != null) {
-								var diff = Math.floor((current - prev) / 86400000);
-								if(diff > 1) {
-									for(d=1;d<=diff;d++) {
-										var emptyDate = new Date(prev);
-										emptyDate.setDate(emptyDate.getDate() + d);
-										disabledDates.push(dateToStr(emptyDate));
-									}
-								}
-							}
-
-						}
-						return disabledDates;
-			}
-			function dateToStr(date) {
-				function pad(s) { return (s < 10) ? '0' + s : s; };
-				return [date.getFullYear(), pad(date.getMonth()+1), pad(date.getDate())].join('-');
 			}
 
 		}
@@ -217,15 +192,59 @@
 				return paginationService.paginationStart(page, $scope.paginationWindow);
 			}
 		}
+		var sendAccountController = function($scope, $state, couponService, toastr, ngCopy) {
+			function init() {
+				$scope.buttonText = 'Отправить';
+				$scope.accountsAmount = undefined;
+				updateAccountsAmount();
+				$scope.req={};
+			}
+			init();
+			function updateAccountsAmount() {
+				couponService.getActiveAccountsAmount()
+					.then(function(response){
+						$scope.activeAccountsAmount = response.data.activeAccountsAmount;
+						$scope.minDueDate = new Date($scope.activeAccountsAmount[0].duedate);
+						$scope.maxDueDate = new Date($scope.activeAccountsAmount[$scope.activeAccountsAmount.length-1].duedate);			
+						$scope.disabledDates = couponService.listDisabledDates($scope.activeAccountsAmount);
+					}, function(data, status, headers, config){
+						console.log(data.error + ' ' + status);
+					});
+			}
+			$scope.invite = function() {
+						$scope.buttonText = 'Отправляем ...';
+						$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
+						couponService.sendAccounts($scope.req)
+						.then(function(response){
+							var link = "http://198.96.90.154:10102/#/view-invite/" + response.data.uuid;
+							ngCopy(link);
+							toastr.info('Код: ' + response.data.uuid, 'Приглашение успешно отправлено!');
+							$state.reload();
+						},function(err){
+							console.log(err);
+							toastr.error('Во время отправки приглашения произошла ошибка', 'Ошибка отправки приглашения!');
+						})
+						.finally(function(){
+							$scope.buttonText = 'Отправить';
+							updateAccountsAmount();
+				});
+			}
+			$scope.refreshAmount = function () {
+				if($scope.req.duedate == undefined || $scope.activeAccountsAmount == undefined) return;
+				$scope.accountsAmount = couponService.checkAccountsAmount($scope.req.duedate, $scope.activeAccountsAmount);
+			};
+		}
 		/* dsependencies injection block */
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		sendInviteController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
 		viewInviteController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		viewInvitesListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
+		sendAccountController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
 		/* controllers definition */
 		angular.module('azweb.core.controllers')
 		.controller('couponsListController', couponsListController)
 		.controller('sendInviteController', sendInviteController)
 		.controller('viewInviteController', viewInviteController)
-		.controller('viewInvitesListController', viewInvitesListController);
+		.controller('viewInvitesListController', viewInvitesListController)
+		.controller('sendAccountController', sendAccountController);
 }());

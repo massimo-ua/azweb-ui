@@ -35,7 +35,13 @@
   			templateUrl: 'modules/core/views/view-invites-list.html',
   			controller: 'viewInvitesListController',
   			data: {requiredLogin: true}
-  		});
+  		})
+      .state('sendAccount', {
+        url: '/send-account',
+        templateUrl: 'modules/core/views/send-account.html',
+        controller: 'sendAccountController',
+        data: {requiredLogin: true}
+      });
   		$urlRouterProvider.otherwise('/coupons');
 }]);
 

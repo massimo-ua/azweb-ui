@@ -1,0 +1,26 @@
+<div class="row" ng-show="accountsAmount">
+	<div class="col-sm-4 col-sm-offset-4">
+		<span><b>Доступно аккаунтов: {{ accountsAmount }}</b></span>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 col-sm-offset-4">
+		<ng-form id="invite-form" name="inviteForm">
+			<div ng-class="{'has-error': inviteForm.amount.$dirty && inviteForm.amount.$invalid}" class="form-group">
+				<label for="amount" class="text-default">Количество</label>
+				<input ng-disabled="formDisabled" min="1" max="nominal.count" name="amount" type="number" ng-required="true" ng-model="req.amount" class="form-control" placeholder="Укажите количество аккаунтов для отправки" />
+				<div class="help-block error" ng-show="inviteForm.amount.$dirty && inviteForm.amount.$error.required">Пожалуйста, Укажите количество аккаунтов для отправки</div>
+			</div>
+			<div ng-class="{'has-error': inviteForm.email.$dirty && inviteForm.email.$invalid}" class="form-group">
+				<label for="email" class="text-default">Email</label>
+				<input ng-disabled="formDisabled" name="email" type="email" ng-model="req.email" class="form-control" placeholder="Укажите email для отправки приглашения" />
+				<div class="help-block error" ng-show="inviteForm.email.$dirty && inviteForm.email.$error.required">Пожалуйста, укажите корректный email</div>
+			</div>
+      		<div ng-click="refreshAmount()" disabled-dates="disabledDates" min-date="minDueDate" max-date="maxDueDate" pickadate week-starts-on="1" ng-model="req.duedate"></div>
+      		<hr/>
+			<div class="form-group">
+				<input type="button" class="btn btn-lg btn-default btn-block" ng-click="invite()" ng-disabled="inviteForm.$invalid" value="{{buttonText}}" />
+			</div>
+		</ng-form>
+	</div>
+</div>
