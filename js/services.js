@@ -141,7 +141,7 @@ angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREF
               if(prev != null) {
                 var diff = Math.floor((current - prev) / 86400000);
                 if(diff > 1) {
-                  for(var d=1;d<=diff;d++) {
+                  for(var d=1;d<diff;d++) {
                     var emptyDate = new Date(prev);
                     emptyDate.setDate(emptyDate.getDate() + d);
                     disabledDates.push(dateToStr(emptyDate));
