@@ -103,7 +103,7 @@
 				$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
 				couponService.invite($scope.req)
 				.then(function(response){
-					var link = "http://198.96.90.154:10102/#/view-invite/" + response.data.uuid;
+					var link = "http://198.96.90.123:10102/#/view-invite/" + response.data.uuid;
 					ngCopy(link);
 					toastr.info('Код: ' + response.data.uuid, 'Приглашение успешно отправлено!');
 					$state.reload();
@@ -196,6 +196,7 @@
 			function init() {
 				$scope.buttonText = 'Отправить';
 				$scope.accountsAmount = undefined;
+				$scope.activeAccountsAmount = [];
 				updateAccountsAmount();
 				$scope.req={};
 			}
@@ -203,10 +204,17 @@
 			function updateAccountsAmount() {
 				couponService.getActiveAccountsAmount()
 					.then(function(response){
-						$scope.activeAccountsAmount = response.data.activeAccountsAmount;
-						$scope.minDueDate = new Date($scope.activeAccountsAmount[0].duedate);
-						$scope.maxDueDate = new Date($scope.activeAccountsAmount[$scope.activeAccountsAmount.length-1].duedate);			
-						$scope.disabledDates = couponService.listDisabledDates($scope.activeAccountsAmount);
+						if(response.data.activeAccountsAmount.length > 0) {
+							$scope.activeAccountsAmount = response.data.activeAccountsAmount;
+							$scope.minDueDate = new Date(response.data.activeAccountsAmount[0].duedate);
+							if(response.data.activeAccountsAmount.length > 1) {
+								$scope.maxDueDate = new Date(response.data.activeAccountsAmount[response.data.activeAccountsAmount.length-1].duedate);
+							} else {
+								var date = new Date($scope.minDueDate);
+								$scope.maxDueDate = new Date(date.setTime( date.getTime() + 86400000 ));
+							}	
+							$scope.disabledDates = couponService.listDisabledDates($scope.activeAccountsAmount);
+						}
 					}, function(data, status, headers, config){
 						console.log(data.error + ' ' + status);
 					});
@@ -216,7 +224,7 @@
 						$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
 						couponService.sendAccounts($scope.req)
 						.then(function(response){
-							var link = "http://198.96.90.154:10102/#/view-invite/" + response.data.uuid;
+							var link = "http://198.96.90.123:10102/#/view-invite/" + response.data.uuid;
 							ngCopy(link);
 							toastr.info('Код: ' + response.data.uuid, 'Приглашение успешно отправлено!');
 							$state.reload();
