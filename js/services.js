@@ -151,6 +151,16 @@ angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREF
 
             }
             return disabledDates;
+      },
+      getStatistics: function(page) {
+        var config = {
+          method: 'GET',
+          url: ACCOUNT_PREFIX + '/statistics',
+          params: {
+            page: (page ? page : 1)
+          }
+        }
+        return $http(config);
       }
 	}
   function dateToStr(date) {
@@ -172,10 +182,10 @@ angular.module('azweb.services').factory('paginationService',[function(){
       }
   }
 }]);
-angular.module('azweb.services').value('AUTH_PREFIX','http://198.96.90.123:10101/api/v1/auth');
-angular.module('azweb.services').value('COUPON_PREFIX','http://198.96.90.123:10101/api/v1/coupons');
-angular.module('azweb.services').value('ACCOUNT_PREFIX','http://198.96.90.123:10101/api/v1/accounts');
-//angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
-//angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');
-//angular.module('azweb.services').value('ACCOUNT_PREFIX','http://127.0.0.1:5000/api/v1/accounts');
+//angular.module('azweb.services').value('AUTH_PREFIX','http://198.96.90.123:10101/api/v1/auth');
+//angular.module('azweb.services').value('COUPON_PREFIX','http://198.96.90.123:10101/api/v1/coupons');
+//angular.module('azweb.services').value('ACCOUNT_PREFIX','http://198.96.90.123:10101/api/v1/accounts');
+angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
+angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');
+angular.module('azweb.services').value('ACCOUNT_PREFIX','http://127.0.0.1:5000/api/v1/accounts');
 }());

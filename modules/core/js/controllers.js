@@ -242,17 +242,50 @@
 				$scope.accountsAmount = couponService.checkAccountsAmount($scope.req.duedate, $scope.activeAccountsAmount);
 			};
 		}
+		var accStatController = function($scope, $stateParams, couponService, paginationService, toastr) {
+			$scope.coupons = {};
+			$scope.paginationEnabled = false;
+			$scope.paginationWindow = 5;
+			$scope.loadCoupons = function(type, page) {
+				couponService.getStatistics(page)
+				.then(function(response){
+					if(response.data.data.length == 0) {
+						toastr.error('Не найдено ни одной записи соответствующей запросу', 'Данных не найдено!');
+						$scope.paginationEnabled = false;
+					}
+					else {
+						$scope.coupons = response.data.data;
+					}
+					if(response.data.pagination.total_pages > 1) {
+						$scope.paginationEnabled = true;
+					}
+					$scope.coupons.pagination = response.data.pagination;  
+				},function(err){
+					toastr.error('Во время загрузки статистики произошла ошибка', 'Ошибка загрузки статистики!');
+				});
+			}
+			$scope.loadCoupons(null, $stateParams.page);
+			$scope.paginationEnd = function(page, total) {
+				return paginationService.paginationEnd(page, $scope.paginationWindow, total);
+			}
+			$scope.paginationStart = function(page) {
+				return paginationService.paginationStart(page, $scope.paginationWindow);
+			}
+		}
 		/* dsependencies injection block */
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		sendInviteController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
 		viewInviteController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		viewInvitesListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		sendAccountController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
+		accStatController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		/* controllers definition */
 		angular.module('azweb.core.controllers')
 		.controller('couponsListController', couponsListController)
 		.controller('sendInviteController', sendInviteController)
 		.controller('viewInviteController', viewInviteController)
 		.controller('viewInvitesListController', viewInvitesListController)
-		.controller('sendAccountController', sendAccountController);
+		.controller('sendAccountController', sendAccountController)
+		.controller('accStatController', accStatController);
+
 }());

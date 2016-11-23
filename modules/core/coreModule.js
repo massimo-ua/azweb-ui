@@ -41,6 +41,15 @@
         templateUrl: 'modules/core/views/send-account.html',
         controller: 'sendAccountController',
         data: {requiredLogin: true}
+      })
+      .state('accStatistics', {
+        url: '/acc-statistics',
+        params: {
+          page: 1
+        },
+        templateUrl: 'modules/core/views/statistics.html',
+        controller: 'accStatController',
+        data: {requiredLogin: true}
       });
   		$urlRouterProvider.otherwise('/coupons');
 }]);

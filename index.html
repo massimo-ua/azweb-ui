@@ -45,6 +45,14 @@
           </ul>
         </li>
       </ul>
+      <ul ng-cloak ng-show="userProfile" class="nav navbar-nav">
+        <li ng-cloak ng-show="userProfile" class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><b>Статистика</b> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+       <li ui-sref-active="active" ui-sref="accStatistics"><a>Аккаунты</a></li>
+          </ul>
+        </li>
+      </ul>
       <ul class="nav navbar-nav navbar-right">
         <li ng-cloak ng-show="!userProfile"><a ui-sref="authLogin"><span class="glyphicon glyphicon-log-in"></span> Login</a>
         </li>
