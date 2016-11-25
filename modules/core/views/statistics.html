@@ -1,10 +1,11 @@
 <div class="row">
 	<table class="table table-striped">
-		<tr><th>Дата</th><th>Зарегистрировано</th><th>Удалено</th></tr>
+		<tr><th>Дата</th><th>Зарегистрировано</th><th>Удалено</th><th>Осталось</th></tr>
 		<tr ng-repeat="st in coupons track by $index">
 			<td>{{ st.date | date: 'dd.MM.yyyy' }}</td>
 			<td>{{ st.created }}</td>
 			<td>{{ st.deleted }}</td>
+			<td>{{ st.created - st.deleted }} ({{ ((st.created - st.deleted)/st.created * 100).toFixed(2) }}%)</td>
 		</tr>
 	</table>
 </div>
