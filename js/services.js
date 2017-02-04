@@ -310,9 +310,9 @@ angular.module('azweb.services').value('COUPON_PREFIX','http://46.254.19.107:101
 angular.module('azweb.services').value('ACCOUNT_PREFIX','http://46.254.19.107:10101/api/v1/accounts');
 angular.module('azweb.services').value('MESSAGE_PREFIX','http://46.254.19.107:10101/api/v1/messages');
 angular.module('azweb.services').value('SETTINGS_PREFIX','http://46.254.19.107:10101/api/v1/settings');
-angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
-angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');
-angular.module('azweb.services').value('ACCOUNT_PREFIX','http://127.0.0.1:5000/api/v1/accounts');
-angular.module('azweb.services').value('MESSAGE_PREFIX','http://127.0.0.1:5000/api/v1/messages');
-angular.module('azweb.services').value('SETTINGS_PREFIX','http://127.0.0.1:5000/api/v1/settings');
+//angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
+//angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');
+//angular.module('azweb.services').value('ACCOUNT_PREFIX','http://127.0.0.1:5000/api/v1/accounts');
+//angular.module('azweb.services').value('MESSAGE_PREFIX','http://127.0.0.1:5000/api/v1/messages');
+//angular.module('azweb.services').value('SETTINGS_PREFIX','http://127.0.0.1:5000/api/v1/settings');
 }());
