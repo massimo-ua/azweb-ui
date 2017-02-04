@@ -5,6 +5,8 @@ angular.module('azweb',[
 		'satellizer',
 		'toastr',
     'pickadate',
+    'ngDialog',
+    'base64',
 		'azweb.services',
 		'azweb.filters',
 		'azweb.auth',

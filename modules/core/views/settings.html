@@ -1,0 +1,51 @@
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<ng-form id="invite-form" name="vm.inviteForm">
+			<div class="text-left"><i ng-click="vm.addSubjectParser()" class="glyphicon glyphicon-plus-sign"></i> <b>{{ vm.goupTextHeader1 }}</b></div>
+			<div class="row">
+				<table class="table table-striped">
+					<tr>
+						<th>{{ vm.regexpLabel }}</th>
+						<th>{{ vm.nominalLabel }}</th>
+						<th nowrap style="width: 30px;">{{ vm.toolsLabel }}</th>
+					</tr>
+					<tr ng-repeat="sp in vm.subjectParsers track by $index">
+						<td>{{ sp.regexp }}</td>
+						<td>{{ sp.nominal }}</td>
+						<td>
+							<i ng-click="vm.deleteSubjectParser($index)" class="glyphicon glyphicon-remove-circle"></i>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="text-left"><i ng-click="vm.addBodyParser()" class="glyphicon glyphicon-plus-sign"></i> <b>{{ vm.goupTextHeader2 }}</b></div>
+			<div class="row">
+				<table class="table table-striped">
+					<tr>
+						<th>{{ vm.regexp2Label }}</th>
+						<th>{{ vm.parserDueDateLabel }}</th>
+						<th>{{ vm.formatDueDateLabel }}</th>
+						<th nowrap style="width: 30px;">{{ vm.toolsLabel }}</th>
+					</tr>
+					<tr ng-repeat="bp in vm.bodyParsers track by $index">
+						<td>{{ bp.regexp }}</td>
+						<td>{{ bp.due_date_parser }}</td>
+						<td>{{ bp.due_date_format }}</td>
+						<td>
+							<i ng-click="vm.deleteBodyParser($index)" class="glyphicon glyphicon-remove-circle"></i>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="row">
+			<div class="text-left">
+			<b>{{ vm.goupTextHeader3 }}</b>
+			</div>
+			<div>
+			<span><b>{{ vm.withdeletionLabel }}</b> </span>
+				<button ng-click="vm.toggleWithDeletion()" ng-class="{true: 'btn-danger', false: 'btn-success', undefined: 'btn-default'}[vm.withdeletion]" type="button" class="btn btn-xs"> {{ vm.withdeletion ? vm.withdeletionOn : vm.withdeletionOff }}</button>
+			</div>
+			</div>
+		</ng-form>
+	</div>
+</div>

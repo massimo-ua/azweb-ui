@@ -50,6 +50,20 @@
         templateUrl: 'modules/core/views/statistics.html',
         controller: 'accStatController',
         data: {requiredLogin: true}
+      })
+      .state('sendBroadcast', {
+        url: '/send-broadcast',
+        templateUrl: 'modules/core/views/send-broadcast.html',
+        controller: 'SendBroadCastController',
+        controllerAs: 'sbc',
+        data: {requiredLogin: true}
+      })
+      .state('settings', {
+        url: '/settings',
+        templateUrl: 'modules/core/views/settings.html',
+        controller: 'SettingsController',
+        controllerAs: 'vm',
+        data: {requiredLogin: true}
       });
   		$urlRouterProvider.otherwise('/coupons');
 }]);

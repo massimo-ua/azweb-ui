@@ -224,7 +224,7 @@
 						$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
 						couponService.sendAccounts($scope.req)
 						.then(function(response){
-							var link = "http://198.96.90.123:10102/#/view-invite/" + response.data.uuid;
+							var link = "http://46.254.19.107:10102/#/view-invite/" + response.data.uuid;
 							ngCopy(link);
 							toastr.info('Код: ' + response.data.uuid, 'Приглашение успешно отправлено!');
 							$state.reload();
@@ -272,6 +272,183 @@
 				return paginationService.paginationStart(page, $scope.paginationWindow);
 			}
 		}
+		var SendBroadCastController = function(toastr, $log, couponService) {
+			this.buttonText = "Отправить";
+			this.saveMessage = function() {
+				$log.debug(this);
+				couponService.sendBroadCast(this.msg).then(function(response){
+					$log.debug(response);
+					toastr.info('Сообщение успешно поставлено в очередь для последующей обработки!','Сообщение отправлено');
+				}, function(err){
+					$log.error(err);
+					toastr.error('Произошла ошибка во время постановки сообщения в очередь для последующей обработки!','Сообщение не отправлено!');
+				});
+				
+			}
+		}
+		var SettingsController = function(mailManagerService, toastr, ngDialog, $scope, $log) {
+			var vm = this;
+			function init() {
+				vm.withdeletion = undefined;
+				vm.subjectParsers = [];
+				vm.bodyParsers = [];
+				vm.buttonText = "Сохранить";
+				vm.goupTextHeader1 = "Настройки парсера заголовка сообщения";
+				vm.goupTextHeader2 = "Настройки парсера тела сообщения";
+				vm.goupTextHeader3 = "Общие настройки";
+				vm.regexpLabel = "Парсер темы письма";
+				vm.regexp2Label = "Парсер купона";
+				vm.nominalLabel = "Номинал";
+				vm.parserDueDateLabel = "Парсер Duedate",
+				vm.formatDueDateLabel = "Формат Duedate"
+				vm.toolsLabel = "Инструменты";
+				vm.withdeletionOn = "Включено";
+				vm.withdeletionOff = "Выключено";
+				vm.withdeletionLabel = "Удаление писем";
+				mailManagerService.getSubjectParser()
+					.then(function(response){
+						vm.subjectParsers = response;
+					})
+					.catch(function(err){
+						$log.error(err);
+					});
+				mailManagerService.getBodyParser()
+					.then(function(response){
+						vm.bodyParsers = response;
+					})
+					.catch(function(err){
+						$log.error(err);
+					});
+				mailManagerService.getEmailDeletion()
+					.then(function(response){
+						vm.withdeletion = response;
+					})
+					.catch(function(err){
+						$log.error(err);
+					});
+			};
+			init();
+			vm.addSubjectParser = function(){
+                var config = {
+                    template: 'modules/core/views/subject-parser.html',
+                    closeByDocument: true,
+                    closeByEscape: true,
+                    showClose: true,
+                    controller: PopupController
+                }
+                ngDialog.openConfirm(config)
+                	.then(function(input){
+                		mailManagerService.saveSubjectParser(input)
+                			.then(function(response){
+                				toastr.info('Шаблон успешно сохранен');
+                			})
+                			.catch(function(err){
+                				$log.error(err);
+                				toastr.error('Произошла ошибка при сохранении шаблона');
+                			});
+                		vm.subjectParsers.push(input);
+                	},
+                	function(event){
+                		$log.debug(event);
+                		toastr.info('Парсер не был добавлен!');
+                	});
+                function PopupController($scope) {
+                	function init() {
+                		$scope.buttonText = "Сохранить";
+                		$scope.fields = [{
+                			name: 'regexp',
+                			label: 'Парсер темы письма',
+                			help: 'Введите регулярное выражение'
+                		},{
+                			name: 'nominal',
+                			label: 'Код номинала (D - удаление)',
+                			help: 'Введите код номинала'
+                		}];
+                		$scope.settings = {};
+                	}
+                	init();
+                }
+                PopupController.$inject = ['$scope'];
+			}
+			vm.addBodyParser = function(){
+                var config = {
+                    template: 'modules/core/views/subject-parser.html',
+                    closeByDocument: true,
+                    closeByEscape: true,
+                    showClose: true,
+                    controller: PopupController
+                }
+                ngDialog.openConfirm(config)
+                	.then(function(input){
+                		mailManagerService.saveBodyParser(input)
+                			.then(function(response){
+                				toastr.info('Шаблон успешно сохранен');
+                			})
+                			.catch(function(err){
+                				$log.error(err);
+                				toastr.error('Произошла ошибка при сохранении шаблона');
+                			});
+                		vm.bodyParsers.push(input);
+                	},
+                	function(event){
+                		$log.debug(event);
+                		toastr.info('Парсер не был добавлен!');
+                	});
+                function PopupController($scope) {
+                	function init() {
+                		$scope.fields = [{
+                			name: 'regexp',
+                			label: 'Парсер купона',
+                			help: 'Введите регулярное выражение'
+                		},{
+                			name: 'due_date_parser',
+                			label: 'Парсер Duedate',
+                			help: 'Введите регулярное выражения для Duedate'
+                		},{
+                			name: 'due_date_format',
+                			label: 'Формат Duedate (strptime)',
+                			help: 'Введите формат даты для Duedate'
+                		}];
+                		$scope.buttonText = "Сохранить";
+                		$scope.settings = {};
+                	}
+                	init();
+                }
+                PopupController.$inject = ['$scope'];
+			}
+			vm.toggleWithDeletion = function(){
+				var value = (vm.withdeletion == undefined) ? true : !vm.withdeletion;  
+				mailManagerService.saveEmailDeletion(value)
+					.then(function(response){
+						vm.withdeletion = value;
+					})
+					.catch(function(err){
+						$log.error(err);
+					});
+			}
+			vm.deleteSubjectParser = function(index) {
+				if(index == undefined) return;
+				mailManagerService.deleteSubjectParser(vm.subjectParsers[index].id)
+					.then(function(response){
+						vm.subjectParsers.splice(index,1);
+					})
+					.catch(function(err){
+						$log.error(err);
+					});
+			}
+			vm.deleteBodyParser = function(index) {
+				if(index == undefined) return;
+				$log.debug(index);
+				$log.debug(vm.bodyParsers);
+				mailManagerService.deleteBodyParser(vm.bodyParsers[index].id)
+					.then(function(response){
+						vm.bodyParsers.splice(index,1);
+					})
+					.catch(function(err){
+						$log.error(err);
+					});
+			}
+		}
 		/* dsependencies injection block */
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		sendInviteController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
@@ -279,6 +456,8 @@
 		viewInvitesListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		sendAccountController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
 		accStatController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
+		SendBroadCastController.$inject = ['toastr', '$log', 'couponService'];
+		SettingsController.$inject = ['mailManagerService', 'toastr', 'ngDialog', '$scope', '$log'];
 		/* controllers definition */
 		angular.module('azweb.core.controllers')
 		.controller('couponsListController', couponsListController)
@@ -286,6 +465,8 @@
 		.controller('viewInviteController', viewInviteController)
 		.controller('viewInvitesListController', viewInvitesListController)
 		.controller('sendAccountController', sendAccountController)
-		.controller('accStatController', accStatController);
+		.controller('accStatController', accStatController)
+		.controller('SendBroadCastController', SendBroadCastController)
+		.controller('SettingsController', SettingsController);
 
 }());

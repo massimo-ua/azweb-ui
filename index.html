@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap-theme.min.css">
   <link rel="stylesheet" href="libs/angular-toastr/dist/angular-toastr.min.css">
   <link rel="stylesheet" href="libs/angular-pickadate/dist/angular-pickadate.css">
+  <link rel="stylesheet" href="libs/ng-dialog/css/ngDialog.min.css">
+  <link rel="stylesheet" href="libs/ng-dialog/css/ngDialog-theme-default.min.css">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -53,6 +55,22 @@
           </ul>
         </li>
       </ul>
+      <ul ng-cloak ng-show="userProfile" class="nav navbar-nav">
+        <li ng-cloak ng-show="userProfile" class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><b>Рассылка</b> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+       <li ui-sref-active="active" ui-sref="sendBroadcast"><a>Отправить всем</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul ng-cloak ng-show="userProfile" class="nav navbar-nav">
+        <li ng-cloak ng-show="userProfile" class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><b>Настройки</b> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+       <li ui-sref-active="active" ui-sref="settings"><a>Настройки парсера почты</a></li>
+          </ul>
+        </li>
+      </ul>
       <ul class="nav navbar-nav navbar-right">
         <li ng-cloak ng-show="!userProfile"><a ui-sref="authLogin"><span class="glyphicon glyphicon-log-in"></span> Login</a>
         </li>
@@ -83,6 +101,8 @@
   <script src="libs/angular-toastr/dist/angular-toastr.tpls.min.js"></script>
   <script src="libs/angular-pickadate/dist/angular-pickadate.min.js"></script>
   <script src="libs/ng-clipboard/ngcopy.js"></script>
+  <script src="libs/ng-dialog/js/ngDialog.min.js"></script>
+  <script src="libs/angular-base64/angular-base64.min.js"></script>
   <!-- application code -->
   <script src="js/app.js"></script>
   <script src="js/services.js"></script>

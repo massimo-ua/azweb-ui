@@ -4,7 +4,7 @@
 		<tr ng-repeat="st in coupons track by $index">
 			<td>{{ st.date | date: 'dd.MM.yyyy' }}</td>
 			<td>{{ st.created }}</td>
-			<td>{{ st.deleted }}</td>
+			<td>{{ st.deleted }} ({{ st.deletedatdate }})</td>
 			<td>{{ st.created - st.deleted }} ({{ ((st.created - st.deleted)/st.created * 100).toFixed(2) }}%)</td>
 		</tr>
 	</table>

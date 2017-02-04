@@ -35,7 +35,7 @@ angular.module('azweb.services').factory('authService', ['$auth', '$http', 'AUTH
     }
   }
 }]);
-angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREFIX', 'ACCOUNT_PREFIX', function($http, COUPON_PREFIX, ACCOUNT_PREFIX) {
+angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREFIX', 'ACCOUNT_PREFIX', 'MESSAGE_PREFIX', function($http, COUPON_PREFIX, ACCOUNT_PREFIX, MESSAGE_PREFIX) {
   return {
     getCoupons: function(type, page) {
     	var types = ['actual','used','all'];
@@ -161,7 +161,15 @@ angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREF
           }
         }
         return $http(config);
-      }
+      },
+      sendBroadCast: function(msg) {
+        var config = {
+          method: 'POST',
+          url: MESSAGE_PREFIX + '/broadcast/send',
+          data: msg
+        }
+        return $http(config);
+      },
 	}
   function dateToStr(date) {
         function pad(s) { return (s < 10) ? '0' + s : s; };
@@ -182,10 +190,129 @@ angular.module('azweb.services').factory('paginationService',[function(){
       }
   }
 }]);
-angular.module('azweb.services').value('AUTH_PREFIX','http://198.96.90.123:10101/api/v1/auth');
-angular.module('azweb.services').value('COUPON_PREFIX','http://198.96.90.123:10101/api/v1/coupons');
-angular.module('azweb.services').value('ACCOUNT_PREFIX','http://198.96.90.123:10101/api/v1/accounts');
-//angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
-//angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');
-//angular.module('azweb.services').value('ACCOUNT_PREFIX','http://127.0.0.1:5000/api/v1/accounts');
+angular.module('azweb.services').factory('mailManagerService',['$log','SETTINGS_PREFIX', '$base64', '$http', '$q', function($log, SETTINGS_PREFIX, $base64, $http, $q){
+  return {
+    saveSubjectParser: function(settings) {
+        var data = {};
+        data.regexp = $base64.encode(settings.regexp);
+        data.nominal = $base64.encode(settings.nominal);
+        var config = {
+          method: 'POST',
+          url: SETTINGS_PREFIX + '/parser/subject',
+          data: data
+        }
+        return $http(config);
+      },
+    saveBodyParser: function(settings) {
+        var data = {};
+        data.regexp = $base64.encode(settings.regexp);
+        data.due_date_parser = $base64.encode(settings.due_date_parser);
+        data.due_date_format = $base64.encode(settings.due_date_format);
+        var config = {
+          method: 'POST',
+          url: SETTINGS_PREFIX + '/parser/body',
+          data: data
+        }
+        return $http(config);
+      },
+    saveEmailDeletion: function(value) {
+        var config = {
+          method: 'POST',
+          url: SETTINGS_PREFIX + '/email',
+          data: {
+            withdeletion: value
+          }
+        }
+        return $http(config);
+      },
+    getSubjectParser: function() {
+        var result = $q.defer();
+        var config = {
+          method: 'GET',
+          url: SETTINGS_PREFIX + '/parser/subject'
+        }
+        $http(config)
+          .then(function(response){
+            var data = [];
+            for(var i=0; i<response.data.data.length; i++) {
+              data.push({
+                id: response.data.data[i].id,
+                regexp: $base64.decode(response.data.data[i].regexp),
+                nominal: $base64.decode(response.data.data[i].nominal)
+              });
+            }
+            result.resolve(data);
+          })
+          .catch(function(err){
+            result.reject(err);
+          });
+          return result.promise;
+      },
+    getBodyParser: function() {
+        var result = $q.defer();
+        var config = {
+          method: 'GET',
+          url: SETTINGS_PREFIX + '/parser/body'
+        }
+        $http(config)
+          .then(function(response){
+            var data = [];
+            for(var i=0; i<response.data.data.length; i++) {
+              data.push({
+                id: response.data.data[i].id,
+                regexp: $base64.decode(response.data.data[i].regexp),
+                due_date_parser: $base64.decode(response.data.data[i].due_date_parser),
+                due_date_format: $base64.decode(response.data.data[i].due_date_format)
+              });
+            }
+            result.resolve(data);
+          })
+          .catch(function(err){
+            result.reject(err);
+          });
+          return result.promise;
+
+      },
+    getEmailDeletion: function() {
+        var result = $q.defer();
+        var config = {
+          method: 'GET',
+          url: SETTINGS_PREFIX + '/email'
+        }
+        $http(config)
+          .then(function(response){
+            var data = (response.data.data[0].value === "True");
+            result.resolve(data);
+          })
+          .catch(function(err){
+            result.reject(err);
+          });
+          return result.promise;
+      },
+    deleteSubjectParser: function(id) {
+        var config = {
+          method: 'DELETE',
+          url: SETTINGS_PREFIX + '/parser/subject/' + id
+        }
+        return $http(config);
+    },
+    deleteBodyParser: function(id) {
+        var config = {
+          method: 'DELETE',
+          url: SETTINGS_PREFIX + '/parser/body/' + id
+        }
+        return $http(config);
+    }
+  }
+}]);
+angular.module('azweb.services').value('AUTH_PREFIX','http://46.254.19.107:10101/api/v1/auth');
+angular.module('azweb.services').value('COUPON_PREFIX','http://46.254.19.107:10101/api/v1/coupons');
+angular.module('azweb.services').value('ACCOUNT_PREFIX','http://46.254.19.107:10101/api/v1/accounts');
+angular.module('azweb.services').value('MESSAGE_PREFIX','http://46.254.19.107:10101/api/v1/messages');
+angular.module('azweb.services').value('SETTINGS_PREFIX','http://46.254.19.107:10101/api/v1/settings');
+angular.module('azweb.services').value('AUTH_PREFIX','http://127.0.0.1:5000/api/v1/auth');
+angular.module('azweb.services').value('COUPON_PREFIX','http://127.0.0.1:5000/api/v1/coupons');
+angular.module('azweb.services').value('ACCOUNT_PREFIX','http://127.0.0.1:5000/api/v1/accounts');
+angular.module('azweb.services').value('MESSAGE_PREFIX','http://127.0.0.1:5000/api/v1/messages');
+angular.module('azweb.services').value('SETTINGS_PREFIX','http://127.0.0.1:5000/api/v1/settings');
 }());
