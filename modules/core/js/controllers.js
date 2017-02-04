@@ -103,7 +103,7 @@
 				$scope.req.duedate = $scope.req.duedate ? new Date($scope.req.duedate) : undefined;
 				couponService.invite($scope.req)
 				.then(function(response){
-					var link = "http://198.96.90.123:10102/#/view-invite/" + response.data.uuid;
+					var link = "http://46.254.19.107:10102/#/view-invite/" + response.data.uuid;
 					ngCopy(link);
 					toastr.info('Код: ' + response.data.uuid, 'Приглашение успешно отправлено!');
 					$state.reload();
