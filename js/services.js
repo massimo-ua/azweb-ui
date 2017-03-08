@@ -38,7 +38,7 @@ angular.module('azweb.services').factory('authService', ['$auth', '$http', 'AUTH
 angular.module('azweb.services').factory('couponService', ['$http', 'COUPON_PREFIX', 'ACCOUNT_PREFIX', 'MESSAGE_PREFIX', function($http, COUPON_PREFIX, ACCOUNT_PREFIX, MESSAGE_PREFIX) {
   return {
     getCoupons: function(type, page) {
-    	var types = ['actual','used','all'];
+    	var types = ['actual','used','all','unregistered'];
     	var config = {
     		method: 'GET',
     		url: COUPON_PREFIX+'/'+( types.indexOf(type) < 0 ? 'actual' : type ),

@@ -33,6 +33,7 @@
           <ul class="dropdown-menu">
        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'actual', page: 1})"><a>Активные</a></li>
         <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'used', page: 1})"><a>Использованные</a></li>
+        <li ng-cloak ng-show="userProfile" ui-sref-active="active" ui-sref="coupons({type:'unregistered', page: 1})"><a>Незарегистрированные</a></li>
         <li ui-sref-active="active" ui-sref="coupons({type:'all', page: 1})"><a>Все</a></li>
           </ul>
         </li>
