@@ -305,6 +305,30 @@ angular.module('azweb.services').factory('mailManagerService',['$log','SETTINGS_
     }
   }
 }]);
+// account service to manage accounts
+angular.module('azweb.services').factory('accountManagerService', accountManagerService);
+function accountManagerService($log, $http, ACCOUNT_PREFIX) {
+  return {
+    getAccount: function(id) {
+      var config = {
+        method: 'GET',
+        url: ACCOUNT_PREFIX + '/' + id
+      }
+      return $http(config);
+    },
+    updateAccount: function(account) {
+      var config = {
+        method: 'PUT',
+        url: ACCOUNT_PREFIX + '/' + account.id,
+        data: account
+      }
+      return $http(config);
+    }
+  }
+}
+accountManagerService.$inject = ['$log', '$http', 'ACCOUNT_PREFIX'];
+
+['$log','SETTINGS_PREFIX', '$base64', '$http', '$q'];
 angular.module('azweb.services').value('AUTH_PREFIX','http://46.254.19.107:10101/api/v1/auth');
 angular.module('azweb.services').value('COUPON_PREFIX','http://46.254.19.107:10101/api/v1/coupons');
 angular.module('azweb.services').value('ACCOUNT_PREFIX','http://46.254.19.107:10101/api/v1/accounts');

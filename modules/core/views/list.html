@@ -1,6 +1,6 @@
 <div class="row">
 	<table class="table table-striped">
-		<tr><th></th><th>Email</th><th>Пароль</th><th>Купон</th><th>Номинал</th><th>Действителен до</th><th>Обновлен</th></tr>
+		<tr><th></th><th>Email</th><th>Пароль</th><th>Купон</th><th>Номинал</th><th>Действителен до</th><th>Обновлен</th><th></th></tr>
 		<tr ng-repeat="coupon in coupons.data track by coupon.id">
 			<td><input ng-show="type != 'all'" type="checkbox" ng-checked="coupon.used" ng-click="use($index)"></input></td>
 			<td>{{ coupon.email }}</td>
@@ -9,6 +9,7 @@
 			<td>{{ coupon.nominal }}</td>
 			<td>{{ coupon.duedate | date: 'dd.MM.yyyy' }}</td>
 			<td>{{ coupon.updated_at | date: 'dd.MM.yyyy hh:mm:ss' }}</td>
+			<td><a class="glyphicon glyphicon-pencil" ui-sref="editAccount({id: coupon.id })" aria-hidden="true"></a></td>
 		</tr>
 	</table>
 </div>

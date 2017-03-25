@@ -449,6 +449,51 @@
 					});
 			}
 		}
+		var EditAccountController = function(toastr, accountManagerService, $log, $stateParams) {
+			var vm = this;
+			function init() {
+				vm.account = {};
+				vm.buttonText = "Сохранить";
+				if($stateParams.id != undefined) {
+					accountManagerService
+						.getAccount($stateParams.id)
+							.then(function(response){
+								vm.account.id = response.data.id;
+								vm.account.email = response.data.email;
+								vm.account.password = response.data.password;
+								vm.account.coupon = response.data.coupon;
+								vm.account.nominal = response.data.nominal;
+							})
+							.catch(function(error){
+								$log.error(error);
+							});
+				}
+				else {
+					$log.error('EditAccountController: Got undefined account id!');
+				}
+			}
+			init();
+			vm.update = updateAccount;
+			function updateAccount() {
+				vm.buttonText = "Сохранение...";
+				accountManagerService
+					.updateAccount(vm.account)
+						.then(function(response){
+							toastr.info('Аккаунт №' + response.data.id + ' успешно обновлен!');
+							vm.account.email = response.data.email;
+							vm.account.password = response.data.password;
+							vm.account.coupon = response.data.coupon;
+							vm.account.nominal = response.data.nominal;
+						})
+						.catch(function(error){
+							$log.error(error);
+							toastr.error('Произошла ошибка при обновлении аккаунта №' + response.data.id + '!');
+						})
+						.finally(function(){
+							vm.buttonText = "Сохранить";
+						});
+			}
+		}
 		/* dsependencies injection block */
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		sendInviteController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
@@ -458,6 +503,7 @@
 		accStatController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		SendBroadCastController.$inject = ['toastr', '$log', 'couponService'];
 		SettingsController.$inject = ['mailManagerService', 'toastr', 'ngDialog', '$scope', '$log'];
+		EditAccountController.$inject = ['toastr', 'accountManagerService', '$log', '$stateParams'];
 		/* controllers definition */
 		angular.module('azweb.core.controllers')
 		.controller('couponsListController', couponsListController)
@@ -467,6 +513,7 @@
 		.controller('sendAccountController', sendAccountController)
 		.controller('accStatController', accStatController)
 		.controller('SendBroadCastController', SendBroadCastController)
-		.controller('SettingsController', SettingsController);
+		.controller('SettingsController', SettingsController)
+		.controller('EditAccountController', EditAccountController);
 
 }());

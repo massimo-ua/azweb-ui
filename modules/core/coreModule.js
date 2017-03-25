@@ -64,6 +64,13 @@
         controller: 'SettingsController',
         controllerAs: 'vm',
         data: {requiredLogin: true}
+      })
+      .state('editAccount', {
+        url: '/edit-account/:id',
+        templateUrl: 'modules/core/views/edit-account.html',
+        controller: 'EditAccountController',
+        controllerAs: 'vm',
+        data: {requiredLogin: true}
       });
   		$urlRouterProvider.otherwise('/coupons');
 }]);

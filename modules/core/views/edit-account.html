@@ -1,0 +1,30 @@
+<div class="row">
+	<div class="col-sm-4 col-sm-offset-4">
+		<ng-form id="invite-form" name="Form">
+			<div ng-class="{'has-error': Form.email.$dirty && Form.email.$invalid}" class="form-group">
+				<label for="email" class="text-default">Email</label>
+				<input ng-disabled="formDisabled" name="email" type="email" ng-required="true" ng-model="vm.account.email" class="form-control" placeholder="Укажите Email" />
+				<div class="help-block error" ng-show="Form.email.$dirty && Form.email.$error.required">Пожалуйста, Укажите Email</div>
+			</div>
+			<div ng-class="{'has-error': Form.password.$dirty && Form.password.$invalid}" class="form-group">
+				<label for="password" class="text-default">Пароль</label>
+				<input ng-disabled="formDisabled" name="password" type="text" ng-required="true" ng-model="vm.account.password" class="form-control" placeholder="Укажите пароль" />
+				<div class="help-block error" ng-show="Form.password.$dirty && Form.password.$error.required">Пожалуйста, Укажите пароль</div>
+			</div>
+			<div ng-class="{'has-error': Form.coupon.$dirty && Form.coupon.$invalid}" class="form-group">
+				<label for="coupon" class="text-default">Купон</label>
+				<input ng-disabled="formDisabled" name="coupon" type="text" ng-required="true" ng-model="vm.account.coupon" class="form-control" placeholder="Укажите купон" />
+				<div class="help-block error" ng-show="Form.coupon.$dirty && Form.coupon.$error.required">Пожалуйста, Укажите купон</div>
+			</div>
+			<div ng-class="{'has-error': Form.nominal.$dirty && Form.nominal.$invalid}" class="form-group">
+				<label for="nominal" class="text-default">Номинал</label>
+				<input ng-disabled="formDisabled" name="nominal" type="text" ng-required="true" ng-model="vm.account.nominal" class="form-control" placeholder="Укажите номинал" />
+				<div class="help-block error" ng-show="Form.nominal.$dirty && Form.nominal.$error.required">Пожалуйста, Укажите номинал</div>
+			</div>
+      		<hr/>
+			<div class="form-group">
+				<input type="button" class="btn btn-lg btn-default btn-block" ng-click="vm.update()" ng-disabled="Form.$invalid" value="{{ vm.buttonText }}" />
+			</div>
+		</ng-form>
+	</div>
+</div>
