@@ -7,7 +7,7 @@
 			$scope.type = $stateParams.type;
 			$scope.paginationWindow = 5;
 			$scope.loadCoupons = function(type, page) {
-				if($scope.coupons.pagination != undefined && $scope.coupons.pagination.page == page) {
+				if($scope.coupons.pagination !== undefined && $scope.coupons.pagination.page == page) {
 					return;
 				}
 				couponService.getCoupons(type, page)
@@ -160,10 +160,11 @@
 				return paginationService.paginationStart(page, $scope.paginationWindow);
 			}
 		}
-		var viewInvitesListController = function($scope, $stateParams, couponService, paginationService, toastr) {
+		var viewInvitesListController = function($scope, $stateParams, couponService, paginationService, toastr, COUPON_PREFIX) {
 			$scope.coupons = {};
 			$scope.paginationEnabled = false;
 			$scope.paginationWindow = 5;
+			$scope.download_link = COUPON_PREFIX + '/invitation';
 			$scope.loadCoupons = function(type, page) {
 				couponService.getInvitations(page)
 				.then(function(response){
@@ -498,7 +499,7 @@
 		couponsListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		sendInviteController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
 		viewInviteController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
-		viewInvitesListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
+		viewInvitesListController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr', 'COUPON_PREFIX'];
 		sendAccountController.$inject = ['$scope', '$state', 'couponService', 'toastr', 'ngCopy'];
 		accStatController.$inject = ['$scope', '$stateParams', 'couponService', 'paginationService', 'toastr'];
 		SendBroadCastController.$inject = ['toastr', '$log', 'couponService'];
